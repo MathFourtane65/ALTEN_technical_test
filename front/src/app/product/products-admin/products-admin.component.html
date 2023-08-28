@@ -1,0 +1,68 @@
+
+<button type="button" pButton pRipple label="New" style="margin-left: 5px;" class="p-button-success" icon="pi pi-plus" (click)="showDialog = true"></button>
+<button type="button" pButton pRipple label="Delete" style="margin-left: 5px;" class="p-button-danger"  [disabled]="selectedProducts.length <= 0" icon="pi pi-trash" (click)="deleteProduct()"></button>
+
+<p-dialog header="Ajouter un nouveau produit" [(visible)]="showDialog" [modal]="true" [style]="{width: '400px'}" [draggable]="false">
+    <form #newProductForm="ngForm" (ngSubmit)="addProduct(newProductForm)">
+        <div class="p-field">
+            <label for="code">Code</label>
+            <input type="text" pInputText id="code" [(ngModel)]="newProduct.code" name="code" required>
+        </div>
+        <div class="p-field">
+            <label for="name">Name</label>
+            <input type="text" pInputText id="name" [(ngModel)]="newProduct.name" name="name" required>
+        </div>
+        <button type="submit" pButton label="Ajouter"></button>
+    </form>
+</p-dialog>
+
+<p-toast></p-toast>
+<p-table [value]="products" dataKey="id" editMode="row" [(selection)]="selectedProducts" [tableStyle]="{'min-width': '50rem'}">
+
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 5%;">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th style="width:20%">Code</th>
+            <th style="width:20%">Name</th>
+            <th style="width:20%">Actions</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="product">
+            <td>
+                <p-tableCheckbox [value]="product"></p-tableCheckbox>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="product.code">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{product.code}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="product.name" required>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{product.name}}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                    <button *ngIf="!editing" pButton pRipple type="button" style="background-color: white; border: none; cursor: pointer;" pInitEditableRow (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"><i class="pi pi-pencil" style="font-size: 1rem; color: blue;"></i></button>
+                    <button *ngIf="!editing" pButton pRipple type="button" style="background-color: white; border: none; cursor: pointer; margin: 5px 5px 5px 5px;" (click)="onRowDelete(product)" class="p-button-rounded p-button-text"><i class="pi pi-trash" style="font-size: 1rem; color: red;"></i></button>
+                                          
+                    <button *ngIf="editing" pButton pRipple type="button" style="background-color: white; border: none; cursor: pointer;" pSaveEditableRow (click)="onRowEditSave(product)" class="p-button-rounded p-button-text"><i class="pi pi-check" style="font-size: 1rem; color: green;"></i></button>                    
+                    <button *ngIf="editing" pButton pRipple type="button" style="background-color: white; border: none; cursor: pointer;" pCancelEditableRow (click)="onRowEditCancel(product, ri)" class="p-button-rounded p-button-text"><i class="pi pi-times" style="font-size: 1rem; color: red;"></i></button>                
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
